@@ -26,14 +26,20 @@ function processData(data)
 {
     /** @type {Map<string, Map<number, number>>} */
     let players = new Map();
+    /** @type {Array<Array<number>>} */
+    let groups = [];
     let season_number = 0;
     
     for (let season of data)
     {
-        let position = 0;
+        let position = -1;
+        let season_groups = [];
 
         for (let group of season)
         {
+            season_groups.push(position);
+            position++;
+
             for (let placement of group.Placements)
             {
                 /** @type {Map<number, number>} */
@@ -54,10 +60,11 @@ function processData(data)
             }
         }
 
+        groups.push(season_groups);
         season_number++;
     }
 
-    return { players };
+    return { players, groups };
 }
 
 /**
@@ -171,7 +178,7 @@ function drawSelectedPlayerShapes(context, [player_name, { shadow_path, fill_pat
 async function onWindowLoad()
 {
     let data = await fetchData();
-    let { players } = processData(data);
+    let { players, groups } = processData(data);
     let seasons_count = data.length;
     //let players_count = players.size;
     let players_count = Math.max(...data.flatMap(s => s.map(g => g.Placements.length).reduce((a, b) => a + b, 0)))
@@ -224,9 +231,33 @@ async function onWindowLoad()
     
     if (buffer_context)
     {
+        buffer_context.fillStyle = "white";
+        buffer_context.fillRect(0, 0, buffer_canvas.width, buffer_canvas.height);
+
         for (let player_shapes of players_shapes)
         {
             drawPlayerShapes(buffer_context, player_shapes, line_width);
+        }
+
+        let x = 0;
+        buffer_context.fillStyle = '#aaa';
+        buffer_context.strokeStyle = '#ddd';
+        buffer_context.font = 'normal 2em Verdana'
+        buffer_context.lineWidth = 1.5;
+        buffer_context.shadowBlur = 0;
+        
+        for (let season_groups of groups)
+        {
+            let group_code = 65;
+
+            for (let position of season_groups)
+            {
+                buffer_context.fillText(String.fromCharCode(group_code), x + row_width / 4, margin_top + position * row_height + 8);
+                buffer_context.strokeText(String.fromCharCode(group_code), x + row_width / 4, margin_top + position * row_height + 8);
+                group_code++
+            }
+            
+            x += row_width;
         }
 
         drawCanvas();
