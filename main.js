@@ -67,7 +67,7 @@ function processData(data)
  * @param {number} row_width
  * @returns 
  */
-function createPlayerShapes(player_data, seasons_count, row_height, row_width, margin_top)
+function createPlayerShapes(player_data, seasons_count, row_height, row_width, margin_top, position_out)
 {
     let shadow_path = new Path2D();
     let fill_paths = [];
@@ -76,7 +76,6 @@ function createPlayerShapes(player_data, seasons_count, row_height, row_width, m
     let previous_position = -1;
     let row_width_half = row_width / 2;
     let row_width_quarter = row_width / 4;
-    let position_out = 100;
     
     for (let season_number = 0; season_number < seasons_count; season_number++)
     {
@@ -174,7 +173,8 @@ async function onWindowLoad()
     let data = await fetchData();
     let { players } = processData(data);
     let seasons_count = data.length;
-    let players_count = players.size;
+    //let players_count = players.size;
+    let players_count = Math.max(...data.flatMap(s => s.map(g => g.Placements.length).reduce((a, b) => a + b, 0)))
     let margin_top = 50;
     let line_width = 10;
     let row_width = 200;
@@ -182,10 +182,11 @@ async function onWindowLoad()
     let players_shapes = new Map();
     let hue = 0;
     let hue_step = Math.round(360 / (players_count + 1));
+    let position_out = players_count + 2;
 
     for (let [player_name, player_data] of players)
     {
-        let shapes = createPlayerShapes(player_data, seasons_count, row_height, row_width, margin_top);
+        let shapes = createPlayerShapes(player_data, seasons_count, row_height, row_width, margin_top, position_out);
         shapes.hue = hue;
         players_shapes.set(player_name, shapes);
         hue += hue_step;
@@ -193,7 +194,7 @@ async function onWindowLoad()
 
     let canvas = document.createElement('canvas');
     canvas.width = row_width * seasons_count;
-    canvas.height = row_height * players_count;
+    canvas.height = row_height * (players_count + 3) + margin_top;
     let context = canvas.getContext('2d');
     document.body.appendChild(canvas);
     let highlighted_x = 0;
@@ -223,13 +224,9 @@ async function onWindowLoad()
     
     if (buffer_context)
     {
-        // let hue = 0;
-        // let hue_step = Math.round(360 / (players_count + 1));
-
         for (let player_shapes of players_shapes)
         {
             drawPlayerShapes(buffer_context, player_shapes, line_width);
-            // hue += hue_step;
         }
 
         drawCanvas();
