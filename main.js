@@ -181,7 +181,7 @@ async function onWindowLoad()
     let { players, groups } = processData(data);
     let seasons_count = data.length;
     //let players_count = players.size;
-    let players_count = Math.max(...data.flatMap(s => s.map(g => g.Placements.length).reduce((a, b) => a + b, 0)))
+    let players_count = Math.max(...data.flatMap(s => s.map(g => g.Placements.length).reduce((a, b) => a + b, 0))) + Math.max(...groups.map(s => s.length));
     let margin_top = 50;
     let line_width = 10;
     let row_width = 200;
