@@ -7,6 +7,20 @@
  * @typedef {{ Player: string, Position: number }} Placement
  */
 
+function shuffle(array)
+{
+    let currentIndex = array.length,  randomIndex;
+
+    while (currentIndex != 0)
+    {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+    
+    return array;
+}
+
 /**
  * @returns {Promise<Data>}
  */
@@ -147,12 +161,12 @@ function drawPlayerShapes(context, [player_name, { shadow_path, fill_paths, name
     context.shadowBlur = 3;
     context.lineWidth = line_width;
     context.strokeStyle = `hsl(${hue}, 100%, 95%)`;
-    context.stroke(shadow_path);
+    //context.stroke(shadow_path);
     context.shadowBlur = 0;
-    context.strokeStyle = `hsl(${hue}, 100%, 85%)`;
+    context.strokeStyle = `hsl(${hue}, 100%, 90%)`;
     fill_paths.forEach(p => context.stroke(p));
     context.lineWidth = 2.5;
-    context.strokeStyle = `hsl(${hue}, 50%, 50%)`;
+    context.strokeStyle = `hsl(${hue}, 50%, 60%)`;
     name_positions.forEach(({x, y}) => context.strokeText(player_name, x + 3, y + 3));
     context.fillStyle = `hsl(${hue}, 100%, 90%)`;
     name_positions.forEach(({x, y}) => context.fillText(player_name, x + 3, y + 3));
@@ -164,7 +178,8 @@ function drawSelectedPlayerShapes(context, [player_name, { shadow_path, fill_pat
     context.shadowBlur = 3;
     context.lineWidth = line_width;
     context.strokeStyle = `hsl(${hue}, 100%, 95%)`;
-    context.stroke(shadow_path);
+    //context.stroke(shadow_path);
+    fill_paths.forEach(p => context.stroke(p));
     context.shadowBlur = 0;
     context.strokeStyle = `hsl(${hue}, 100%, 50%)`;
     fill_paths.forEach(p => context.stroke(p));
@@ -180,28 +195,43 @@ async function onWindowLoad()
     let data = await fetchData();
     let { players, groups } = processData(data);
     let seasons_count = data.length;
-    //let players_count = players.size;
-    let players_count = Math.max(...data.flatMap(s => s.map(g => g.Placements.length).reduce((a, b) => a + b, 0))) + Math.max(...groups.map(s => s.length));
+    let players_count = players.size;
+    let max_players_in_season = Math.max(...data.flatMap(s => s.map(g => g.Placements.length).reduce((a, b) => a + b, 0))) + Math.max(...groups.map(s => s.length));
     let margin_top = 50;
-    let line_width = 10;
+    let line_width = 12;
     let row_width = 200;
     let row_height = line_width + 10;
     let players_shapes = new Map();
-    let hue = 0;
-    let hue_step = Math.round(360 / (players_count + 1));
-    let position_out = players_count + 2;
+    let position_out = max_players_in_season + 2;
 
     for (let [player_name, player_data] of players)
     {
         let shapes = createPlayerShapes(player_data, seasons_count, row_height, row_width, margin_top, position_out);
-        shapes.hue = hue;
         players_shapes.set(player_name, shapes);
+    }
+
+    let hue = 0;
+    let hue_step = Math.round(360 / (max_players_in_season + 1));
+    let hues = [];
+
+    for (let i = 0; i < players_count; i++)
+    {
+        hues.push(hue);
         hue += hue_step;
+    }
+
+    shuffle(hues);
+
+    let hue_index = 0;
+
+    for (let [_, player_shapes] of players_shapes)
+    {
+        player_shapes.hue = hues[hue_index++];
     }
 
     let canvas = document.createElement('canvas');
     canvas.width = row_width * seasons_count;
-    canvas.height = row_height * (players_count + 3) + margin_top;
+    canvas.height = row_height * (max_players_in_season + 3) + margin_top;
     let context = canvas.getContext('2d');
     document.body.appendChild(canvas);
     let highlighted_x = 0;
@@ -288,6 +318,13 @@ async function onWindowLoad()
                         break;
                     }
                 }
+
+                highlighted_x = current_x;
+                highlighted_y = current_y;
+            }
+            else
+            {
+                current_player_name = highlighted_player_name;
             }
         }
 
