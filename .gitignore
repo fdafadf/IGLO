@@ -3,3 +3,7 @@
 /cache
 /IGLO
 /IGLO.sln
+/src/Iglo/bin
+/src/Iglo/obj
+/src/Iglo.RankingChart.DataDownloader/bin
+/src/Iglo.RankingChart.DataDownloader/obj
