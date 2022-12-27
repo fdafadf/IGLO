@@ -26,8 +26,9 @@ export class RankingChartCanvas
         // @ts-ignore
         this.context = element.getContext('2d');
         this.context.font = settings.group_name_font;
-        this.group_name_font_height = this.context.measureText("A").actualBoundingBoxAscent;
-        this.first_position_y = this.group_name_font_height + this.settings.line_width;
+        let group_name_font_metrics = this.context.measureText("A");
+        this.group_name_font_height = group_name_font_metrics.actualBoundingBoxAscent + group_name_font_metrics.actualBoundingBoxDescent;
+        this.first_row_y = this.group_name_font_height + this.settings.line_width + 6;
     }
 
     drawPlayers(players_shapes)
@@ -66,7 +67,7 @@ export class RankingChartCanvas
 
             for (let position of season_groups)
             {
-                context.fillText(String.fromCharCode(group_code), x + this.settings.row_width / 4, this.getY(position) + 6);
+                context.fillText(String.fromCharCode(group_code), x + this.settings.row_width / 4, this.getY(position) + 8);
                 //context.strokeText(String.fromCharCode(group_code), x + this.settings.row_width / 4, this.getY(position) + 6);
                 group_code++
             }
@@ -186,13 +187,13 @@ export class RankingChartCanvas
     getCellCoordinates(canvas_x, canvas_y)
     {
         let x = Math.floor(canvas_x / this.settings.row_width);
-        let y = Math.floor((canvas_y - this.first_position_y) / this.settings.row_height);
+        let y = Math.floor((canvas_y - this.first_row_y) / this.settings.row_height);
         return { x, y };
     }
 
     getY(position)
     {
-        return position * this.settings.row_height + this.settings.margin_top + this.first_position_y;
+        return position * this.settings.row_height + this.settings.margin_top + this.first_row_y;
     }
     
     _drawPlayerShapes(context, [player_name, { shadow_path, fill_paths, name_positions, hue }], line_width)
