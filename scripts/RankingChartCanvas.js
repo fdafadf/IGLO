@@ -26,7 +26,7 @@ export class RankingChartCanvas
         // @ts-ignore
         this.context = element.getContext('2d');
         this.context.font = settings.group_name_font;
-        this.group_name_font_height = this.context.measureText("A").fontBoundingBoxAscent
+        this.group_name_font_height = this.context.measureText("A").actualBoundingBoxAscent;
         this.first_position_y = this.group_name_font_height + this.settings.line_width;
     }
 
