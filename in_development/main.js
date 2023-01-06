@@ -7,14 +7,14 @@ import { SvgPathBuilder } from "./js/SvgPathBuilder.js";
 
 async function onWindowLoad()
 {
-    let iglo_data_request = await fetch('/in_development/data/iglo.json');
+    let iglo_data_request = await fetch('data/iglo.json');
     /** @type {RawIgloData} */
     let iglo_data = await iglo_data_request.json();
 
     //let season_number_max = Math.max.apply(Math, iglo_data.seasons);
     let select_group_control = new SelectGroupControl(iglo_data);
 
-    let elo_data_request = await fetch('/in_development/data/iglo_elo.json');
+    let elo_data_request = await fetch('data/iglo_elo.json');
     /** @type {RawEloData} */
     let elo_data = await elo_data_request.json();
     let elo_svg = new Svg();
