@@ -15,6 +15,7 @@ export class Svg
         this.labels_container = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         this.element.appendChild(this.lines_container);
         this.element.appendChild(this.labels_container);
+        this.path_builder = new SvgPathBuilder();
     }
 
     /**
@@ -22,7 +23,7 @@ export class Svg
      */
     addLine(points)
     {
-        let path_element = new SvgPathBuilder().buildPath(points);
+        let path_element = this.path_builder.buildPath(points);
         path_element.setAttribute('stroke-width', '2px');
         path_element.setAttribute('fill', 'none');
         this.lines_container.appendChild(path_element);

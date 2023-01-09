@@ -21,6 +21,7 @@ export class View
         let players_chart_element = document.getElementById('players-chart');
         let select_group_container = document.getElementById('select-group-container');
         let color_settings_container = document.getElementById('settings-colors-container');
+        let params = new URLSearchParams(window.location.search);
 
         this.elo_data = elo_data;
         this.iglo_data = iglo_data;
@@ -36,6 +37,13 @@ export class View
 
         /** @type {Map<string, ViewPlayer>} */
         this.players = new Map();
+
+        let smoothing = params.get('smoothing');
+
+        if (smoothing)
+        {
+            this.svg.path_builder.smoothing = smoothing;
+        }
 
         let svg_info = this._getSvgInfo();
         
@@ -54,7 +62,7 @@ export class View
         this.color_settings_control._onSelectionChanged();
         this.width_settings_control._onSelectionChanged();
 
-        let selected_players = new URLSearchParams(window.location.search).get('selected-players')
+        let selected_players = params.get('selected-players')
 
         if (selected_players)
         {
@@ -89,7 +97,7 @@ export class View
         points = points.slice(this.elo_data.first_season[i] - 1, this.elo_data.last_season[i] + 1);
         let attended_path = this.svg.addLine(points.map(p => [p[0], points[0][1]]));
 
-        let to = new SvgPathBuilder().buildPathNodes(points).join(' ');
+        let to = this.svg.path_builder.buildPathNodes(points).join(' ');
         let animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
         animate.setAttribute('dur', '2s');
         animate.setAttribute('to', to);
