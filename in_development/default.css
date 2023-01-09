@@ -1,5 +1,17 @@
+html {
+    --background: #222;
+}
+::-webkit-scrollbar {
+  width: 1em;
+}
+::-webkit-scrollbar-track {
+    background: #444;
+}
+::-webkit-scrollbar-thumb {
+    background: #000;
+}
 body {
-    background-color: #222;
+    background-color: var(--background);
     margin: 0;
     padding: 0;
 }
@@ -32,10 +44,10 @@ text {
 #sidebar {
     display: flex;
     flex-direction: column;
-    background-color: #222;
+    background-color: var(--background);
 }
 svg {
     width: 100%;
     height: 100%;
-    background-color: #222;
+    background-color: var(--background);
 }
