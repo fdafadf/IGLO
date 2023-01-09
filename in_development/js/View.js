@@ -65,7 +65,7 @@ export class View
                     let checkbox = this.player_list_control.items.get(player_name).checkbox_element;
                     setCheckboxChecked(checkbox, true);
                 }
-            }, 2100)
+            }, 2200)
         }
     }
 
@@ -82,7 +82,12 @@ export class View
         this.player_list_control.add(list_item);
         /** @type [number, number][] */
         let points = this.elo_data.elos[i].map((v, i) => [i * svg_info.x_delta, svg_info.calculateY(v)]);
-        let full_width_path = this.svg.addLine(points.map(p => [p[0], points[0][1]]));
+        let full_width_path = this.svg.addLine(points);
+
+        let full_width_text = this.svg.addText(points[0][0] + 3, points[0][1] + 5, name);
+        let full_width = { path: full_width_path, label: full_width_text, color: 'gray', selected_color: 'white', hidden_color: 'black', selected_label_color: 'yellow', selected: false };
+        points = points.slice(this.elo_data.first_season[i] - 1, this.elo_data.last_season[i] + 1);
+        let attended_path = this.svg.addLine(points.map(p => [p[0], points[0][1]]));
 
         let to = new SvgPathBuilder().buildPathNodes(points).join(' ');
         let animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
@@ -90,12 +95,8 @@ export class View
         animate.setAttribute('to', to);
         animate.setAttribute('attributeName', 'd');
         animate.setAttribute('fill', 'freeze');
-        full_width_path.appendChild(animate);
+        attended_path.appendChild(animate);
 
-        let full_width_text = this.svg.addText(points[0][0] + 3, points[0][1] + 5, name);
-        let full_width = { path: full_width_path, label: full_width_text, color: 'gray', selected_color: 'white', hidden_color: 'black', selected_label_color: 'yellow', selected: false };
-        points = points.slice(this.elo_data.first_season[i] - 1, this.elo_data.last_season[i] + 1);
-        let attended_path = this.svg.addLine(points);
         let attended_text = this.svg.addText(points[0][0] + 3, points[0][1] + 5, name);
         let attended = { path: attended_path, label: attended_text, color: 'gray', selected_color: 'white', hidden_color: 'black', selected_label_color: 'yellow', selected: true };
         return new ViewPlayer(name, list_item, { full_width, attended });
