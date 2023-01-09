@@ -78,12 +78,12 @@ export class View
         animate.setAttribute('fill', 'freeze');
         full_width_path.appendChild(animate);
 
-        let full_width_text = this.svg.addText(points[0][0], points[0][1], name);
-        let full_width = { path: full_width_path, label: full_width_text, color: 'gray', selected_color: 'white', hidden_color: 'black', selected: true };
+        let full_width_text = this.svg.addText(points[0][0] + 3, points[0][1] + 5, name);
+        let full_width = { path: full_width_path, label: full_width_text, color: 'gray', selected_color: 'white', hidden_color: 'black', selected_label_color: 'yellow', selected: true };
         points = points.slice(this.elo_data.first_season[i] - 1, this.elo_data.last_season[i] + 1);
         let attended_path = this.svg.addLine(points);
-        let attended_text = this.svg.addText(points[0][0], points[0][1], name);
-        let attended = { path: attended_path, label: attended_text, color: 'gray', selected_color: 'white', hidden_color: 'black', selected: false };
+        let attended_text = this.svg.addText(points[0][0] + 3, points[0][1] + 5, name);
+        let attended = { path: attended_path, label: attended_text, color: 'gray', selected_color: 'white', hidden_color: 'black', selected_label_color: 'yellow', selected: false };
         return new ViewPlayer(name, list_item, { full_width, attended });
     }
 
@@ -159,7 +159,7 @@ export class View
         let margin = 10;
         let width = this.svg.element.viewBox.baseVal.width;
         let height = this.svg.element.viewBox.baseVal.height;
-        let x_delta = width / (Math.max.apply(Math, this.elo_data.last_season) - 1);
+        let x_delta = (width - margin * 2) / Math.max.apply(Math, this.elo_data.last_season);
         let elo_min = Math.min.apply(Math, this.elo_data.elos.map(v => Math.min.apply(Math, v)));
         let elo_max = Math.max.apply(Math, this.elo_data.elos.map(v => Math.max.apply(Math, v)));
         let elo_range = elo_max - elo_min;
@@ -188,7 +188,7 @@ export class View
                 player.list_item.background_color = `hsl(${hue}, 100%, 50%, 10%)`;
                 player.list_item.color_selected = `hsl(${hue}, 100%, 10%, 100%)`;
                 player.list_item.background_color_selected = `hsl(${hue}, 100%, 50%, 100%)`;
-                player.updateColors(`hsl(${hue}, 100%, 50%, 10%)`, `hsl(${hue}, 100%, 50%, 100%)`, `hsl(${hue}, 100%, 50%, 0%)`);
+                player.updateColors(`hsl(${hue}, 100%, 50%, 5%)`, `hsl(${hue}, 100%, 50%, 100%)`, `hsl(${hue}, 100%, 50%, 0%)`, `hsl(${hue}, 100%, 80%, 100%)`);
                 player.updatePathColors();
                 player.list_item._updateColors();
                 this._applySeriesColorsForPlayer(player);

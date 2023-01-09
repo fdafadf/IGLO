@@ -50,13 +50,14 @@ export class ViewPlayer
         }
     }
     
-    updateColors(color, selected_color, hidden_color)
+    updateColors(color, selected_color, hidden_color, selected_label_color)
     {
         for (let [_, series] of Object.entries(this.series))
         {
             series.color = color;
             series.selected_color = selected_color;
             series.hidden_color = hidden_color;
+            series.selected_label_color = selected_label_color;
         }
     }
 
@@ -68,6 +69,9 @@ export class ViewPlayer
         }
     }
     
+    /**
+     * @param {Series} series 
+     */
     _updateSeriesPathColors(series)
     {
         if (series.selected)
@@ -75,8 +79,8 @@ export class ViewPlayer
             if (this._selected)
             {
                 series.path.setAttribute('stroke', series.selected_color);
-                series.path.style.filter = `drop-shadow(0px 0px 2px ${series.selected_color})`;
-                series.label.setAttribute('fill', series.selected_color);
+                series.path.style.filter = `drop-shadow(0px 0px 2px ${series.selected_color}) drop-shadow(black 0px 0px 4px)`;
+                series.label.setAttribute('fill', series.selected_label_color);
             }
             else
             {

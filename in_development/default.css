@@ -5,8 +5,10 @@ body {
 }
 path {
     transition: stroke 1s, filter 1s;
+    stroke-width: 1em;
 }
 text {
+    transition: filter 1s, fill 1s;
     filter: drop-shadow(black 0px 0px 2px);
 }
 #view {

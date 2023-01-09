@@ -11,6 +11,10 @@ export class Svg
         // this.element.setAttribute('height', '800px');
         // this.element.setAttribute('viewBox', `0 0 ${document.documentElement.clientWidth * 0.65} ${document.documentElement.clientHeight * 0.65}`);
         this.element.setAttribute('viewBox', `0 0 1600 800`);
+        this.lines_container = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        this.labels_container = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        this.element.appendChild(this.lines_container);
+        this.element.appendChild(this.labels_container);
     }
 
     /**
@@ -21,7 +25,7 @@ export class Svg
         let path_element = new SvgPathBuilder().buildPath(points);
         path_element.setAttribute('stroke-width', '2px');
         path_element.setAttribute('fill', 'none');
-        this.element.appendChild(path_element);
+        this.lines_container.appendChild(path_element);
         return path_element;
     }
 
@@ -31,7 +35,7 @@ export class Svg
         text_element.setAttribute('x', x);
         text_element.setAttribute('y', y);
         text_element.textContent = text;
-        this.element.appendChild(text_element);
+        this.labels_container.appendChild(text_element);
         return text_element;
     }
 }
