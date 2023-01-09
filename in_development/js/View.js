@@ -1,6 +1,6 @@
 // @ts-check
 
-import { shuffle } from "./functions.js";
+import { setCheckboxChecked, shuffle } from "./functions.js";
 import { PlayerListControl } from "./PlayerListControl.js";
 import { PlayerListControlItem } from "./PlayerListControlItem.js";
 import { SelectControl } from "./SelectControl.js";
@@ -53,6 +53,20 @@ export class View
         
         this.color_settings_control._onSelectionChanged();
         this.width_settings_control._onSelectionChanged();
+
+        let selected_players = new URLSearchParams(window.location.search).get('selected-players')
+
+        if (selected_players)
+        {
+            setTimeout(() =>
+            {
+                for (let player_name of selected_players.split(','))
+                {
+                    let checkbox = this.player_list_control.items.get(player_name).checkbox_element;
+                    setCheckboxChecked(checkbox, true);
+                }
+            }, 2100)
+        }
     }
 
     /**
@@ -79,11 +93,11 @@ export class View
         full_width_path.appendChild(animate);
 
         let full_width_text = this.svg.addText(points[0][0] + 3, points[0][1] + 5, name);
-        let full_width = { path: full_width_path, label: full_width_text, color: 'gray', selected_color: 'white', hidden_color: 'black', selected_label_color: 'yellow', selected: true };
+        let full_width = { path: full_width_path, label: full_width_text, color: 'gray', selected_color: 'white', hidden_color: 'black', selected_label_color: 'yellow', selected: false };
         points = points.slice(this.elo_data.first_season[i] - 1, this.elo_data.last_season[i] + 1);
         let attended_path = this.svg.addLine(points);
         let attended_text = this.svg.addText(points[0][0] + 3, points[0][1] + 5, name);
-        let attended = { path: attended_path, label: attended_text, color: 'gray', selected_color: 'white', hidden_color: 'black', selected_label_color: 'yellow', selected: false };
+        let attended = { path: attended_path, label: attended_text, color: 'gray', selected_color: 'white', hidden_color: 'black', selected_label_color: 'yellow', selected: true };
         return new ViewPlayer(name, list_item, { full_width, attended });
     }
 
@@ -100,8 +114,8 @@ export class View
     {
         /** @type {SelectControl<() => void>} */
         let control = new SelectControl();
-        control._add('Full', () => this.players.forEach(p => p.selectSeries('full_width')));
         control._add('Attended', () => this.players.forEach(p => p.selectSeries('attended')));
+        control._add('Full', () => this.players.forEach(p => p.selectSeries('full_width')));
         control.onSelectionChanged = width_function => width_function();
         return control;
     }
@@ -131,16 +145,6 @@ export class View
 
     _onGroupSelectionChanged(group)
     {
-        /**
-         * @param {HTMLInputElement} checkbox 
-         * @param {boolean} checked 
-         */
-        function setCheckboxChecked(checkbox, checked)
-        {
-            checkbox.checked = checked;
-            checkbox.dispatchEvent(new Event('change', { bubbles: false, cancelable: true }));
-        }
-        
         // @ts-ignore
         this.player_list_control.element?.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => setCheckboxChecked(checkbox, false));
 

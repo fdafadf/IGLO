@@ -17,3 +17,13 @@ export function shuffle(array)
   
     return array;
 }
+
+/**
+ * @param {HTMLInputElement} checkbox 
+ * @param {boolean} checked 
+ */
+export function setCheckboxChecked(checkbox, checked)
+{
+    checkbox.checked = checked;
+    checkbox.dispatchEvent(new Event('change', { bubbles: false, cancelable: true }));
+}
