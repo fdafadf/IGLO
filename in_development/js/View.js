@@ -159,11 +159,11 @@ export class View
         let margin = 10;
         let width = this.svg.element.viewBox.baseVal.width;
         let height = this.svg.element.viewBox.baseVal.height;
-        let x_delta = width / (Math.max.apply(Math, this.elo_data.last_season) - 2);
+        let x_delta = width / (Math.max.apply(Math, this.elo_data.last_season) - 1);
         let elo_min = Math.min.apply(Math, this.elo_data.elos.map(v => Math.min.apply(Math, v)));
         let elo_max = Math.max.apply(Math, this.elo_data.elos.map(v => Math.max.apply(Math, v)));
         let elo_range = elo_max - elo_min;
-        let calculateY = v => (((height - margin * 2) / elo_range) * (v - elo_min)) + margin;
+        let calculateY = v => height - (((height - margin * 2) / elo_range) * (v - elo_min)) - margin;
         return { x_delta, calculateY, height, height_half: height / 2 };
     }
 
