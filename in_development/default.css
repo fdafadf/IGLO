@@ -1,36 +1,39 @@
-@keyframes example {
-    0%   {fill: red;}
-    25%  {fill: yellow;}
-    50%  {fill: blue;}
-    100% {fill: green;}
-}
-.line1 {
-    filter: drop-shadow( 0px 0px 2px rgba(255, 255, 255, .7));
-}
-.background-test {
-    /* background: repeating-linear-gradient(
-        to right,
-        #039BE5 0px,
-        #039BE5 20px,
-        #90CAF9 20px,
-        #90CAF9 40px
-      ); */
-      fill: rgba(80, 0, 80, 0.5);
-      stroke-width: 1px;
-      stroke: #808;
-}
-.background-test:hover {
-    animation: example 1s;
-}
 body {
-    background-color: #333;
-}
-#path1 {
-    transition: stroke 0.5s ease-out;
-}
-#path1:hover {
-    stroke: hsl(140, 100%, 50%);
+    background-color: #222;
+    margin: 0;
+    padding: 0;
 }
 path {
     transition: stroke 1s, filter 1s;
+}
+text {
+    filter: drop-shadow(black 0px 0px 2px);
+}
+#view {
+    display: flex; 
+    flex-direction: row;
+    width: 100vw;
+    height: 100vh;
+}
+#players-chart {
+    overflow: hidden;
+    padding: 0.5em;
+}
+#sidebar > #player-list-container {  
+    flex:  1;
+    overflow-y: scroll;
+    padding: 0;
+}
+#sidebar > div {
+    padding: 0.5em;
+}
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    background-color: #222;
+}
+svg {
+    width: 100%;
+    height: 100%;
+    background-color: #222;
 }

@@ -8,7 +8,7 @@ export class SelectGroupControl
      */
     constructor(data)
     {
-        this.groupSelected = group => {};
+        this.onSelectionChanged = group => {};
         this.select_season_element = document.createElement('select');
         this.select_group_element = document.createElement('select');
         this.seasons_by_number = new Map();
@@ -45,18 +45,6 @@ export class SelectGroupControl
             group.players.add(player_b);
         }
 
-        // this.season_numbers = [...this.seasons_by_number.keys()];
-        // this.season_numbers.sort();
-        // this.select_season_element.appendChild(document.createElement('option'));
-
-        // for (let season_number of this.season_numbers)
-        // {
-        //     let option_element = document.createElement('option');
-        //     option_element['season'] = this.seasons_by_number.get(season_number);
-        //     option_element.textContent = season_number;
-        //     this.select_season_element.appendChild(option_element);
-        // }
-
         SelectGroupControl._createSelectOptions(this.select_season_element, this.seasons_by_number);
         this.select_season_element.onchange = this._onSeasonChanged.bind(this);
         this.select_group_element.onchange = this._onGroupChanged.bind(this);
@@ -74,7 +62,7 @@ export class SelectGroupControl
     _onGroupChanged()
     {
         let group = this.select_group_element.selectedIndex ? this.select_group_element.selectedOptions[0]['map_value'] : null;
-        this.groupSelected(group);
+        this.onSelectionChanged(group);
     }
 
     /**
